@@ -18,6 +18,7 @@ class HBNBCommand(cmd.Cmd):
         sys.exit(1)
 
     def emptyline(self):
+        """tells the console not to do anything when no command"""
         pass
 
     do_EOF = do_quit
