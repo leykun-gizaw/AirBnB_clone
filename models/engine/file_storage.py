@@ -20,5 +20,5 @@ class FileStorage:
 
     def save(self):
         """serializes __objects to the json file"""
-            with open(FileStorage.__file_path, "r") as t:
+        with open(FileStorage.__file_path, "r") as t:
             json.dump(FileStorage.__objects, t)
