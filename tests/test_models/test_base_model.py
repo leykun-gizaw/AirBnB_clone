@@ -12,7 +12,7 @@ class TestBaseModel(unittest.TestCase):
 
     test_object = BaseModel()
 
-    def test_initial_attribute_types(self):
+    def test___init__(self):
         """Test BaseModel initial instance attribute types.
 
         Check type of the attributes BaseModel's objects have.
@@ -31,7 +31,7 @@ class TestBaseModel(unittest.TestCase):
                                    datetime))
         return None
 
-    def test_save_method(self):
+    def test_save(self):
         """Test BaseModel's 'save' public instance method.
 
         Check the time-stamp of an object after its instantiation.
