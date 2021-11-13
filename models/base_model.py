@@ -2,7 +2,7 @@
 """Module defines BaseModel class."""
 import uuid
 from datetime import datetime
-
+import models
 
 
 class BaseModel:
@@ -20,7 +20,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            storage.new(self)
+            models.storage.new(self)
         else:
             for key in kwargs.keys():
                 if key == 'created_at' or key == 'updated_at':
@@ -52,7 +52,7 @@ class BaseModel:
             None
         """
         self.updated_at = datetime.now()
-        storage.save()
+        models.__init__.storage.save()
         return None
 
     def to_dict(self):

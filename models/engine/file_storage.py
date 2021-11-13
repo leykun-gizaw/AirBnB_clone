@@ -2,12 +2,15 @@
 """This is the json serializer"""
 import json
 from os import path
+from models.base_model import BaseModel
 
 
 class FileStorage:
     """serializes and deserializes an instance"""
     __file_path = "file.json"
     __objects = {}
+    classes = {'BaseModel': BaseModel,
+               'Filestorage': FileStorage}
 
     def all(self):
         """Returns the dictionary @__objects"""
