@@ -52,7 +52,7 @@ class BaseModel:
             None
         """
         self.updated_at = datetime.now()
-        models.__init__.storage.save()
+        models.storage.save()
         return None
 
     def to_dict(self):
