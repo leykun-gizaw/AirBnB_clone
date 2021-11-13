@@ -2,6 +2,7 @@
 """entry point for command interpreter"""
 import cmd
 import sys
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
@@ -18,8 +19,18 @@ class HBNBCommand(cmd.Cmd):
         sys.exit(1)
 
     def emptyline(self):
-        """tells the console not to do anything when no command"""
         pass
+
+    def do_create(self, args):
+        """Create command creates a new object"""
+        if args is not None:
+            args = BaseModel()
+            args.save()
+            print(args.id)
+        elif args != "BaseModel":
+            print("** class doesn't exist **")
+        else:
+            print("** class name missing **")
 
     do_EOF = do_quit
 
