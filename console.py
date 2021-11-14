@@ -7,6 +7,7 @@ from shlex import split
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 
+
 class HBNBCommand(cmd.Cmd):
     """command line class"""
     cmd.use_rawinput = False

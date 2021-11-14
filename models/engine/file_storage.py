@@ -11,7 +11,6 @@ class FileStorage:
     __objects = {}
     classes = {'BaseModel': BaseModel, 'FileStorage': "FileStorage"}
 
-
     def all(self):
         """Returns the dictionary @__objects"""
         return self.__class__.__objects

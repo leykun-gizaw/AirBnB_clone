@@ -4,9 +4,10 @@ from time import sleep
 import sys
 import unittest
 from datetime import datetime
+from models.base_model import BaseModel
 
 sys.path.append("../../")
-from models.base_model import BaseModel
+
 
 class TestBaseModel(unittest.TestCase):
     """Class to test class BaseModel."""
@@ -108,6 +109,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(self.test_object.to_dict()["created_at"], str)
         self.assertIsInstance(self.test_object.to_dict()["updated_at"], str)
     pass
+
 
 if __name__ == "__main__":
     unittest.main()
