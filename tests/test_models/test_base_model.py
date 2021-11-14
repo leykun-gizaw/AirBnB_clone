@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Unit tests for 'base_model.py' module."""
+from time import sleep
 import sys
 import unittest
 from datetime import datetime
@@ -82,7 +83,6 @@ class TestBaseModel(unittest.TestCase):
         bmid = "BaseModel." + bm.id
         with open("file.json", "r") as f:
             self.assertIn(bmid, f.read())
->>>>>>> 72432e079874857525a3f292f06a931002cb33c7
 
     def test_to_dict(self):
         """Test BaseModel's 'to_dict' public instance method.
