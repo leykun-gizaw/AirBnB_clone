@@ -29,6 +29,6 @@ with your remote application and #HaveFun
 ### By:
 * [Obed Amoako](https://github.com/Obed101)
 
-* [Leykun Woldesemayat](https://github.com/to_be_provided)
+* [Leykun Woldesemayat](https://github.com/Bisrat-Aregawi)
 
 Written mainly in : Python :hand: 🐍
