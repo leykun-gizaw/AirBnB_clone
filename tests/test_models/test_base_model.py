@@ -44,12 +44,44 @@ class TestBaseModel(unittest.TestCase):
         Returns:
             None
         """
-        initial = self.test_object.created_at.timestamp()
-        self.test_object.save()
-        after_save = self.test_object.updated_at.timestamp()
+#         initial = self.test_object.created_at.timestamp()
+#         self.test_object.save()
+#         after_save = self.test_object.updated_at.timestamp()
 
-        self.assertTrue(after_save > initial)
-        return None
+#         self.assertTrue(after_save > initial)
+#         return None
+        def test_one_save(self):
+        bm = BaseModel()
+        sleep(0.05)
+        first_updated_at = bm.updated_at
+        bm.save()
+        self.assertLess(first_updated_at, bm.updated_at)
+
+    def test_two_saves(self):
+        """testing two saves"""
+        bm = BaseModel()
+        sleep(0.05)
+        first_updated_at = bm.updated_at
+        bm.save()
+        second_updated_at = bm.updated_at
+        self.assertLess(first_updated_at, second_updated_at)
+        sleep(0.05)
+        bm.save()
+        self.assertLess(second_updated_at, bm.updated_at)
+
+    def test_save_with_arg(self):
+        """testing arguments behaviour"""
+        bm = BaseModel()
+        with self.assertRaises(TypeError):
+            bm.save(None)
+
+    def test_save_updates_file(self):
+        """testing if is updated"""
+        bm = BaseModel()
+        bm.save()
+        bmid = "BaseModel." + bm.id
+        with open("file.json", "r") as f:
+            self.assertIn(bmid, f.read())
 
     def test_to_dict(self):
         """Test BaseModel's 'to_dict' public instance method.
