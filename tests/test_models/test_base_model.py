@@ -44,9 +44,9 @@ class TestBaseModel(unittest.TestCase):
         Returns:
             None
         """
-        initial = self.test_object.created_at.timestamp()
+        initial = test_object.created_at.timestamp()
         self.test_object.save()
-        after_save = self.test_object.updated_at.timestamp()
+        after_save = test_object.updated_at.timestamp()
 
         self.assertTrue(after_save > initial)
         return None

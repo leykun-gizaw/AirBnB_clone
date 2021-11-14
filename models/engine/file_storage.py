@@ -9,7 +9,7 @@ class FileStorage:
     """serializes and deserializes an instance"""
     __file_path = "file.json"
     __objects = {}
-    classes = {'BaseModel': BaseModel}
+    classes = {'BaseModel': BaseModel, 'FileStorage': "FileStorage"}
 
 
     def all(self):

@@ -2,8 +2,10 @@
 """entry point for command interpreter"""
 import cmd
 import sys
+from models import storage
+from shlex import split
 from models.base_model import BaseModel
-
+from models.engine.file_storage import FileStorage
 
 class HBNBCommand(cmd.Cmd):
     """command line class"""
@@ -67,6 +69,20 @@ class HBNBCommand(cmd.Cmd):
             return
         del models.storage.all()[arguments]
         models.storage.save
+
+    def do_all(self, args):
+        """all prints the string representation of all instances"""
+        args.split()
+        if len(args) and args[0] not in FileStorage.classes.keys():
+            print("** class doesn't exist **")
+        elif args is None or args[0] in FileStorage.classes.keys():
+            objects = []
+            for obj in storage.all().values():
+                if len(args) and args[0] == obj.__class__.__name__:
+                    objects.append(obj.__str__())
+                elif len(args) == 0:
+                    objects.append(obj.__str__())
+                print(arg.__str__())
 
     do_EOF = do_quit
 
