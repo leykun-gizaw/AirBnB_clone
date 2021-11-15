@@ -1,6 +1,6 @@
 #!/uxr/bin/python3
 """this is the review module"""
-from base_model import BaseModel
+from models.base_model import BaseModel
 
 
 class Review(BaseModel):
