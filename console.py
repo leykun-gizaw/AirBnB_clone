@@ -27,12 +27,12 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """Create command creates a new object"""
-        if args[0]:
-            if args == "BaseModel":
-                args = BaseModel()
-                args.save()
-                print(args.id)
-            elif args != "BaseModel":
+        if args:
+            if args in FileStorage.classes.keys():
+                instance = FileStorage.classes[args]()
+                print(instance.id)
+                FileStorage.save(instance)
+            else:
                 print("** class doesn't exist **")
                 return
         else:
