@@ -1,8 +1,7 @@
 <h1 align="center">AIRBNB CLONE PROJECT</h1>
 
 > This is a `console` project, more like the `shell` project we wrote
-
-> * [click here](https://github.com/Yunus-kidem/simple_shell) to see that project
+> * [CLICK HERE](https://github.com/Yunus-kidem/simple_shell) to see the `shell` project
 
 > This project is the base of our upcoming wep applications
 
@@ -10,7 +9,7 @@
 
 ```
 $ cd ~/AirBnB_clone
-$ ./console
+$ ./console.py
 ```
 Now you are all set to start typing your commands
 
@@ -24,7 +23,12 @@ The quit or EOF command is used to exit the console safely
 
 ```
 
-<p>Use this `console.py` command to do everything you want
-with your remote application and #HaveFun </p>
+Use this `console.py` command to do everything you want
+with your remote application and #HaveFun
 
-written mainly in : python :hand:
+### By:
+* [Obed Amoako](https://github.com/Obed101)
+
+* [Leykun Woldesemayat](https://github.com/Bisrat-Aregawi)
+
+Written mainly in : Python :hand: 🐍
