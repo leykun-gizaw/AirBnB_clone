@@ -1,9 +1,10 @@
 <h1 align="center">AIRBNB CLONE PROJECT</h1>
 
-> This is a `console` project, more like the `shell` project we wrote
-> * [CLICK HERE](https://github.com/Yunus-kidem/simple_shell) to see the `shell` project
+<h2> The CONSOLE </h2>
 
-> This project is the base of our upcoming wep applications
+> The console is a simple command line interpreter which we will use to manage our objects.
+> Its interactive behavior will be more like the `shell` project we wrote
+> * [CLICK HERE](https://github.com/Yunus-kidem/simple_shell) to see the `shell` project
 
 ### How To Use
 
