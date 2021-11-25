@@ -1,92 +1,195 @@
 #!/usr/bin/python3
-"""entry point for command interpreter"""
+"""Module Defines `HBNBCommand` class"""
 import cmd
-import sys
 from models import storage
-from shlex import split
+from models.user import User
+from models.city import City
+from models.place import Place
+from models.state import State
+from models.review import Review
+from models.amenity import Amenity
 from models.base_model import BaseModel
-from models.engine.file_storage import FileStorage
 
 
 class HBNBCommand(cmd.Cmd):
-    """command line class"""
-    cmd.use_rawinput = False
+    """Class HBNBCommand subclass of cmd.Cmd."""
+
+    classes_dict = {
+        "User": User,
+        "City": City,
+        "Place": Place,
+        "State": State,
+        "Review": Review,
+        "Amenity": Amenity,
+        "BaseModel": BaseModel,
+    }
 
     def __init__(self):
-        """initialises what happens on execution"""
-        cmd.Cmd.__init__(self)
-        self.prompt = '(hbnb) '
+        """Object initializer.
 
-    def do_quit(self, arg):
-        """Quit or EOF command exits the program\n"""
-        sys.exit(1)
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+
+        Returns:
+            None
+        """
+        cmd.Cmd.__init__(self)
+        self.prompt = "(hbnb) "
+        self.bm_object = None
+        return None
+
+    def do_create(self, line):
+        """Create a new BaseModel instance.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+            line (str): argument string passed to interpreter
+
+        Returns:
+            None
+        """
+        if not line:
+            print("** class name missing **")
+        elif line not in HBNBCommand.classes_dict.keys():
+            print("** class doesn't exist **")
+        else:
+            self.bm_object = HBNBCommand.classes_dict[line]()
+            storage.save()
+            print(self.bm_object.id)
+        return None
+
+    def do_show(self, line):
+        """Show BaseModel type instance of given id.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+            line (str): argument string passed to interpreter
+
+        Returns:
+            None
+        """
+        if HBNBCommand.arg_count(line) == 2:
+            if self.bm_object and self.bm_object.id == line.split()[1]:
+                print(self.bm_object)
+            else:
+                key = line.split()[0] + '.' + line.split()[1]
+                for k, v in storage.all().items():
+                    if k == key:
+                        print(v)
+                        return None
+                print("** no instance found **")
+        return None
+
+    def do_destroy(self, line):
+        """Delete BaseModel type instance of given id.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+            line (str): argument string passed to interpreter
+
+        Returns:
+            None
+        """
+        if HBNBCommand.arg_count(line) == 2:
+            key = line.split()[0] + '.' + line.split()[1]
+            if key in list(storage.all().keys()):
+                del storage.all()[key]
+                storage.save()
+            else:
+                print("** no instance found **")
+        return None
+
+    def do_all(self, line):
+        """Print a list of all BaseModel objects as string representation.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+            line (str): argument string passed to interpreter
+
+        Returns:
+            None
+        """
+        if not line:
+            print("** class name missing **")
+        elif line not in HBNBCommand.classes_dict.keys():
+            print("** class doesn't exist **")
+        else:
+            bm_obj_list = []
+            for *_, v in storage.all().items():
+                if v.__class__.__name__ == line:
+                    bm_obj_list.append(str(v))
+            print(bm_obj_list)
+        return None
+
+    def do_update(self, line):
+        """Update instance with given id with provided attribute.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+            line (str): argument string passed to interpreter
+
+        Returns:
+            None
+        """
+        argv = line.split(maxsplit=3)
+        if HBNBCommand.arg_count(line, "do_update") == 4:
+            key = argv[0] + '.' + argv[1]
+            if key in list(storage.all().keys()):
+                if argv[3][0] == '"' and argv[3][len(argv[3]) - 1] == '"':
+                    setattr(storage.all()[key],argv[2], argv[3][1:-1])
+                    storage.save()
+            else:
+                print("** no instance found **")
+        return None
+
+    def do_EOF(self, *_):
+        """Terminate on EOF registration.
+
+        <Ctrl+d> registered will cause this command handler method to execute.
+        Return value of `True` will cause the interpreter to quit gracefully.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+
+        Returns:
+            True
+        """
+        return True
+
+    def do_quit(self, *_):
+        """Exit interpreter when this command handler method is executed.
+
+        Args:
+            self (object): <class '__main__.HBNBCommand'> type object
+
+        Returns:
+            True
+        """
+        return True
+
+    @staticmethod
+    def arg_count(arg_str, handler=""):
+        argv = arg_str.split(maxsplit=3)
+        if not arg_str:
+            print("** class name missing **")
+        elif argv[0] not in HBNBCommand.classes_dict:
+            print("** class doesn't exist **")
+        elif len(argv) < 2:
+            print("** instance id missing **")
+        elif len(argv) == 2:
+            if handler == "do_update":
+                print("** attribute name missing **")
+            else:
+                return 2
+        elif len(argv) == 3 and handler == "do_update":
+            print("** value missing **")
+        elif len(argv) == 4:
+            return 4
+        return None
 
     def emptyline(self):
-        """Overrides the builtin `emptyline`"""
         pass
+    pass
 
-    def do_create(self, args):
-        """Create command creates a new object"""
-        if args:
-            if args in FileStorage.classes.keys():
-                instance = FileStorage.classes[args]()
-                print(instance.id)
-                FileStorage.save(instance)
-            else:
-                print("** class doesn't exist **")
-                return
-        else:
-            print("** class name missing **")
-            return
-
-    def do_show(self, args):
-        """displays the Object name and Id"""
-        if args is None:
-            print("** class name missing **")
-        else:
-            args.split()
-            args[0] = BaseModel()
-            my_path = models.engine.file_storage.FileStorage.classes
-            if args[1] not in my_path.keys():
-                print("** class doesn't exist **")
-            else:
-                print(args.__str__())
-
-    def do_destroy(self, args):
-        """deletes the instance, provided name and Id"""
-        dele = args.split()
-        arguments = "{}.{}".format(dele[0], dele[1])
-        if len(dele) == 0:
-            print("** class name missing **")
-            return
-        if len(dele) == 1:
-            print("** instance id missing **")
-            return
-        if dele[0] not in FileStorage.classes.keys():
-            print("** class doesn't exist **")
-            return
-        if arguments not in models.storage.all().keys():
-            print("** no instance found **")
-            return
-        del models.storage.all()[arguments]
-        models.storage.save
-
-    def do_all(self, args):
-        """all prints the string representation of all instances"""
-        args.split()
-        if len(args) and args[0] not in FileStorage.classes.keys():
-            print("** class doesn't exist **")
-        elif args is None or args[0] in FileStorage.classes.keys():
-            objects = []
-            for obj in storage.all().values():
-                if len(args) and args[0] == obj.__class__.__name__:
-                    objects.append(obj.__str__())
-                elif len(args) == 0:
-                    objects.append(obj.__str__())
-                print(arg.__str__())
-
-    do_EOF = do_quit
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     HBNBCommand().cmdloop()

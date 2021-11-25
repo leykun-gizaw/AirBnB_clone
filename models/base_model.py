@@ -1,73 +1,79 @@
 #!/usr/bin/python3
 """Module defines BaseModel class."""
-import uuid
+from uuid import uuid4
+from copy import deepcopy
+from models import storage
 from datetime import datetime
-import models
 
 
 class BaseModel:
-    """A base class for all other classes."""
+    """BaseModel class to create instances."""
 
-    def __init__(self, *args, **kwargs):
-        """Instance initializer.
+    def __init__(self, *_, **kwargs):
+        """Initialize BaseModel instances.
 
         Args:
-            self (object): Refers to instantiated object.
-            args (parameter): Non keyword arguments
-            kwargs (parameter): keyword arguments
+            self (object): <class '__main__.BaseModel'> type object.
+            kwargs (parameter): keyworded arguments
+
+        Returns:
+            None
         """
+        format = "%Y-%m-%dT%H:%M:%S.%f"
         if not kwargs:
-            self.id = str(uuid.uuid4())
+            self.id = str(uuid4())
             self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            models.storage.new(self)
+            self.updated_at = deepcopy(self.created_at)
+            storage.new(self)
         else:
-            for key in kwargs.keys():
-                if key == 'created_at' or key == 'updated_at':
-                    kwargs[key] = datetime.strptime(kwargs[key],
-                                                    "%Y-%m-%dT%H:%M:%S.%f")
-                    setattr(self, key, kwargs[key])
-                elif key != '__class__':
-                    setattr(self, key, kwargs[key])
+            for k, v in kwargs.items():
+                if k != "__class__":
+                    if k == "created_at" or k == "updated_at":
+                        setattr(self, k, datetime.strptime(v, format))
+                    else:
+                        setattr(self, k, v)
+        return None
 
     def __str__(self):
-        """Return string representation of object.
+        """Return string representation of current object.
 
         Args:
-            self (object): Refers to instantiated object.
+            self (object): <class '__main__.BaseModel'> type object.
 
         Returns:
             String representation of the object that called it.
         """
         return "[{}] ({}) {}".format(self.__class__.__name__,
-                                     self.id, self.__dict__)
+                                     self.id,
+                                     self.__dict__)
 
     def save(self):
-        """Update attribute 'updated_at' with current time.
+        """Update 'updated_at' attrib with current time stamp.
 
         Args:
-            self (object): Refers to instantiated object.
+            self (object): <class '__main__.BaseModel'> type object.
 
         Returns:
             None
         """
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.new(self)
+        storage.save()
         return None
 
     def to_dict(self):
         """Return a dictionary of attributes using __dict__.
 
         Args:
-            self (object): Refers to instantiated object.
+            self (object): <class '__main__.BaseModel'> type object.
 
         Returns:
             Dictionary representation of all attributes of object
         """
-        object_dict = {}
-        object_dict.update(self.__dict__)
-        object_dict.__setitem__('__class__', self.__class__.__name__)
-        object_dict['created_at'] = self.created_at.isoformat()
-        object_dict['updated_at'] = self.updated_at.isoformat()
-
-        return object_dict
+        obj_dict = {}
+        obj_dict.update(self.__dict__)
+        obj_dict["__class__"] = self.__class__.__name__
+        obj_dict["created_at"] = obj_dict["created_at"].isoformat()
+        obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
+        return obj_dict
+    pass

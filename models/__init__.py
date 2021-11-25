@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""this is the magic file"""
+"""__init__ module used to initialize a package."""
 from models.engine.file_storage import FileStorage
 
 storage = FileStorage()
