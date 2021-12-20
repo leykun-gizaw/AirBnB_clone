@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Module Defines `HBNBCommand` class"""
 import cmd
+from sys import stdin
 from models import storage
 from models.user import User
 from models.city import City
@@ -24,30 +25,11 @@ class HBNBCommand(cmd.Cmd):
         "BaseModel": BaseModel,
     }
 
-    def __init__(self):
-        """Object initializer.
-
-        Args:
-            self (object): <class '__main__.HBNBCommand'> type object
-
-        Returns:
-            None
-        """
-        cmd.Cmd.__init__(self)
-        self.prompt = "(hbnb) "
-        self.bm_object = None
-        return None
+    bm_object = None
+    prompt = "(hbnb) " if stdin.isatty() else ""
 
     def do_create(self, line):
-        """Create a new BaseModel instance.
-
-        Args:
-            self (object): <class '__main__.HBNBCommand'> type object
-            line (str): argument string passed to interpreter
-
-        Returns:
-            None
-        """
+        """Create a new BaseModel instance."""
         if not line:
             print("** class name missing **")
         elif line not in HBNBCommand.classes_dict.keys():
@@ -62,29 +44,26 @@ class HBNBCommand(cmd.Cmd):
         """Show BaseModel type instance of given id.
 
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
+            self (object): <class 'main.HBNBCommand'> type object
             line (str): argument string passed to interpreter
 
         Returns:
             None
         """
         if HBNBCommand.arg_count(line) == 2:
-            if self.bm_object and self.bm_object.id == line.split()[1]:
-                print(self.bm_object)
-            else:
-                key = line.split()[0] + '.' + line.split()[1]
-                for k, v in storage.all().items():
-                    if k == key:
-                        print(v)
-                        return None
-                print("** no instance found **")
+            key = line.split()[0] + '.' + line.split()[1]
+            for k, v in storage.all().items():
+                if k == key:
+                    print(v)
+                    return None
+            print("** no instance found **")
         return None
 
     def do_destroy(self, line):
         """Delete BaseModel type instance of given id.
 
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
+            self (object): <class 'main.HBNBCommand'> type object
             line (str): argument string passed to interpreter
 
         Returns:
@@ -102,30 +81,38 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, line):
         """Print a list of all BaseModel objects as string representation.
 
+        Responds to `(hbnb) all` as well as `(hbnb) all <instance type>` and
+        returns either a list of all instances created or a specific type's
+        instances list respectively.
+
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
-            line (str): argument string passed to interpreter
+            self (object): <class 'main.HBNBCommand'> type object
+            line (str, optional): argument string passed to interpreter
 
         Returns:
             None
         """
-        if not line:
-            print("** class name missing **")
-        elif line not in HBNBCommand.classes_dict.keys():
-            print("** class doesn't exist **")
+        bm_obj_list = []
+        if line:
+            if (line in HBNBCommand.classes_dict.keys()):
+                for *_, v in storage.all().items():
+                    if v.__class__.__name__ == line:
+                        bm_obj_list.append(str(v))
+                print(bm_obj_list)
+            else:
+                print("** class doesn't exist **")
         else:
-            bm_obj_list = []
             for *_, v in storage.all().items():
-                if v.__class__.__name__ == line:
-                    bm_obj_list.append(str(v))
+                bm_obj_list.append(str(v))
             print(bm_obj_list)
+
         return None
 
     def do_update(self, line):
         """Update instance with given id with provided attribute.
 
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
+            self (object): <class 'main.HBNBCommand'> type object
             line (str): argument string passed to interpreter
 
         Returns:
@@ -136,7 +123,7 @@ class HBNBCommand(cmd.Cmd):
             key = argv[0] + '.' + argv[1]
             if key in list(storage.all().keys()):
                 if argv[3][0] == '"' and argv[3][len(argv[3]) - 1] == '"':
-                    setattr(storage.all()[key],argv[2], argv[3][1:-1])
+                    setattr(storage.all()[key], argv[2], argv[3][1:-1])
                     storage.save()
             else:
                 print("** no instance found **")
@@ -149,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
         Return value of `True` will cause the interpreter to quit gracefully.
 
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
+            self (object): <class 'main.HBNBCommand'> type object
 
         Returns:
             True
@@ -160,7 +147,7 @@ class HBNBCommand(cmd.Cmd):
         """Exit interpreter when this command handler method is executed.
 
         Args:
-            self (object): <class '__main__.HBNBCommand'> type object
+            self (object): <class 'main.HBNBCommand'> type object
 
         Returns:
             True
@@ -190,6 +177,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         pass
     pass
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
