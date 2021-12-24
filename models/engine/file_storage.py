@@ -79,8 +79,6 @@ class FileStorage:
             "Amenity": Amenity,
             "BaseModel": BaseModel,
         }
-        from models.user import User
-        from models.base_model import BaseModel
         try:
             with open(self.__file_path, "r") as file:
                 deserialize_me = json.load(file)

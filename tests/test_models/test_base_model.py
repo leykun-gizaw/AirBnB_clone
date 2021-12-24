@@ -10,7 +10,41 @@ from models.base_model import BaseModel
 class TestBaseModel(unittest.TestCase):
     """Class to test class BaseModel."""
 
-    test_object = BaseModel()
+    @classmethod
+    def setUpClass(cls):
+        """Class-Wide fixtures setup method.
+
+        Args:
+            cls (class): Refers to `TestBaseModel` class
+
+        Returns:
+            None
+        """
+        cls.test_object = BaseModel()
+
+        cls.dictionary = {
+            "id": str(uuid.uuid4()),
+            "created_at": datetime.now().isoformat(),
+            "__class__": "BaseModel",
+            "my_number": 89,
+            "updated_at": datetime.now().isoformat(),
+            "name": "My_First_Model"
+        }
+        cls.test_object_to_dict = BaseModel(**cls.dictionary)
+        return None
+
+    @classmethod
+    def tearDownClass(cls):
+        """Class-Wide fixtures teardown method.
+
+        Args:
+            cls (class): Refers to `TestBaseModel` class
+        
+        Returns:
+            None
+        """
+        del cls.test_object, cls.dictionary, cls.test_object_to_dict
+        return None
 
     def test__init__(self):
         """Test BaseModel initial instance attributes.
@@ -70,12 +104,11 @@ class TestBaseModel(unittest.TestCase):
         Returns:
             None
         """
-        local_Test_Object = BaseModel()
-        create_time = local_Test_Object.created_at
-        local_Test_Object.save()
-        update_time = local_Test_Object.updated_at
+        test_object_to_dict = BaseModel()
+        create_time = test_object_to_dict.created_at
+        test_object_to_dict.save()
+        update_time = test_object_to_dict.updated_at
         self.assertGreater(update_time, create_time)
-        os.remove("file.json")
         return None
 
     def test_to_dict(self):
@@ -112,7 +145,7 @@ class TestBaseModel(unittest.TestCase):
 
         # Check No_5:
         create_str = self.test_object.to_dict()["created_at"]
-        update_str = self.test_object.to_dict()["created_at"]
+        update_str = self.test_object.to_dict()["updated_at"]
         format = "%Y-%m-%dT%H:%M:%S.%f"
         try:
             datetime.strptime(create_str, format)
@@ -124,15 +157,6 @@ class TestBaseModel(unittest.TestCase):
             self.assertTrue(False, msg="`updated_at` is in incorect format")
 
         # Check No_ 6:
-        dictionary = {
-            "id": str(uuid.uuid4()),
-            "created_at": datetime.now().isoformat(),
-            "__class__": "BaseModel",
-            "my_number": 89,
-            "updated_at": datetime.now().isoformat(),
-            "name": "My_First_Model"
-        }
-        local_Test_Object = BaseModel(**dictionary)
-        self.assertTrue(dictionary == local_Test_Object.to_dict())
+        self.assertTrue(self.dictionary == self.test_object_to_dict.to_dict())
 
         return None
